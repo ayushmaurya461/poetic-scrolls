@@ -33,13 +33,13 @@ const Navbar = () => {
               <li key={link.to}>
                 <Link
                   to={link.to}
-                  className={`relative py-2 group transition-colors hover:text-white
-                    ${location.pathname === link.to ? 'text-white' : 'text-gray-400'}`}
+                  className={`relative py-2 group transition-colors hover:text-gray-800
+                    ${location.pathname === link.to ? 'text-gray-800' : 'text-gray-600'}`}
                 >
                   {link.label}
                   <motion.span
                     className={`absolute bottom-0 left-0 w-full h-0.5 ${
-                      isPoetry ? 'bg-poetry-foreground' : 'bg-white'
+                      isPoetry ? 'bg-poetry-foreground' : 'bg-gray-800'
                     } transform origin-left scale-x-0 transition-transform group-hover:scale-x-100`}
                     initial={false}
                     animate={{ scaleX: location.pathname === link.to ? 1 : 0 }}
