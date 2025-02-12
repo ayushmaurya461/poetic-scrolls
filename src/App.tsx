@@ -26,8 +26,8 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>
-    </QueryClientProvider>
-  </BrowserRouter>
+    </BrowserRouter>
+  </QueryClientProvider>
 );
 
 export default App;
