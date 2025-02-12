@@ -1,11 +1,12 @@
-
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
+import { Link } from 'react-router-dom';
 
 const Index = () => {
   const [section1Ref, section1InView] = useInView({ threshold: 0.3, triggerOnce: true });
   const [section2Ref, section2InView] = useInView({ threshold: 0.3, triggerOnce: true });
   const [section3Ref, section3InView] = useInView({ threshold: 0.3, triggerOnce: true });
+  const [section4Ref, section4InView] = useInView({ threshold: 0.3, triggerOnce: true });
 
   return (
     <div className="min-h-screen">
@@ -30,30 +31,79 @@ const Index = () => {
               Frontend Developer & Poet
             </p>
             <div className="flex justify-center space-x-4">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-3 rounded-full bg-white text-black font-medium"
-              >
-                View Projects
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="px-8 py-3 rounded-full border border-white/20 hover:bg-white/10"
-              >
-                Contact Me
-              </motion.button>
+              <Link to="/projects">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-8 py-3 rounded-full bg-white text-black font-medium"
+                >
+                  View Projects
+                </motion.button>
+              </Link>
+              <Link to="/contact">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-8 py-3 rounded-full border border-white/20 hover:bg-white/10"
+                >
+                  Contact Me
+                </motion.button>
+              </Link>
             </div>
           </motion.div>
         </div>
       </motion.section>
 
-      {/* Skills Section */}
+      {/* Biography Section */}
       <motion.section
         ref={section2Ref}
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: section2InView ? 1 : 0, y: section2InView ? 0 : 50 }}
+        className="min-h-screen flex items-center py-20"
+      >
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: section2InView ? 1 : 0, x: section2InView ? 0 : -50 }}
+              className="relative"
+            >
+              <div className="aspect-square rounded-2xl overflow-hidden">
+                <img
+                  src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80"
+                  alt="Profile"
+                  className="object-cover w-full h-full"
+                />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent rounded-2xl" />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: section2InView ? 1 : 0, x: section2InView ? 0 : 50 }}
+              className="space-y-6"
+            >
+              <h2 className="text-4xl md:text-5xl font-display font-bold">About Me</h2>
+              <p className="text-gray-300 text-lg leading-relaxed">
+                As a seasoned Frontend Developer with expertise in Angular, React, and Three.js,
+                I bring creative visions to life through code. My journey in technology is uniquely
+                intertwined with my passion for poetry, allowing me to approach problem-solving
+                with both logical precision and creative intuition.
+              </p>
+              <p className="text-gray-300 text-lg leading-relaxed">
+                When I'm not crafting user interfaces or optimizing web performance, you'll find
+                me writing poetry that often draws parallels between the digital and emotional
+                landscapes we navigate.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* Skills Section */}
+      <motion.section
+        ref={section3Ref}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: section3InView ? 1 : 0, y: section3InView ? 0 : 50 }}
         className="min-h-screen flex items-center py-20"
       >
         <div className="container mx-auto px-6">
@@ -65,7 +115,7 @@ const Index = () => {
               <motion.div
                 key={tech}
                 initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: section2InView ? 1 : 0, y: section2InView ? 0 : 20 }}
+                animate={{ opacity: section3InView ? 1 : 0, y: section3InView ? 0 : 20 }}
                 transition={{ delay: index * 0.2 }}
                 className="glass p-8 rounded-2xl"
               >
@@ -81,9 +131,9 @@ const Index = () => {
 
       {/* Featured Work Section */}
       <motion.section
-        ref={section3Ref}
+        ref={section4Ref}
         initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: section3InView ? 1 : 0, y: section3InView ? 0 : 50 }}
+        animate={{ opacity: section4InView ? 1 : 0, y: section4InView ? 0 : 50 }}
         className="min-h-screen flex items-center py-20"
       >
         <div className="container mx-auto px-6">

@@ -12,6 +12,7 @@ const Navbar = () => {
     { to: '/experience', label: 'Experience' },
     { to: '/blog', label: 'Blog' },
     { to: '/poetry', label: 'Poetry' },
+    { to: '/contact', label: 'Contact' },
   ];
 
   return (
