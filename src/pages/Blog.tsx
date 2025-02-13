@@ -1,4 +1,3 @@
-
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import DetailDialog from '@/components/ui/DetailDialog';
@@ -55,9 +54,9 @@ const Blog = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen pt-20 px-4 md:px-6"
+      className="min-h-screen pt-16 px-4 md:px-6"
     >
-      <div className="container mx-auto py-20">
+      <div className="container mx-auto py-8">
         <h1 className="text-4xl md:text-6xl font-display font-bold mb-12">Blog</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {blogs.map((blog) => (
@@ -65,12 +64,12 @@ const Blog = () => {
               key={blog.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="glass rounded-xl p-6 cursor-pointer hover:bg-white/5 transition-colors"
+              className="glass rounded-xl p-6 cursor-pointer hover:bg-white/5 transition-colors flex flex-col h-[300px]"
               onClick={() => setSelectedPost(blog)}
             >
-              <h2 className="text-2xl font-display font-bold mb-2">{blog.title}</h2>
-              <p className="text-sm text-gray-400 mb-4">{blog.date}</p>
-              <p className="text-gray-300 mb-6">{blog.excerpt}</p>
+              <h2 className="text-2xl font-display font-bold mb-2 line-clamp-2 text-gray-900">{blog.title}</h2>
+              <p className="text-sm text-gray-700 mb-4">{blog.date}</p>
+              <p className="text-gray-800 mb-6 line-clamp-3 flex-grow">{blog.excerpt}</p>
               <div className="flex items-center gap-4">
                 <button
                   onClick={(e) => {
