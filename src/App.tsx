@@ -15,6 +15,7 @@ import BlogManager from "./pages/admin/BlogManager";
 import PoetryManager from "./pages/admin/PoetryManager";
 import ExperienceManager from "./pages/admin/ExperienceManager";
 import ProjectManager from "./pages/admin/ProjectManager";
+import BlogDetail from "./pages/BlogDetail";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ const App = () => (
         <Route path="/projects/:id" element={<><Navbar /><ProjectDetails /></>} />
         <Route path="/experience" element={<><Navbar /><Experience /></>} />
         <Route path="/blog" element={<><Navbar /><Blog /></>} />
+        <Route path="/blog/:id" element={<><Navbar /><BlogDetail /></>} />
         <Route path="/poetry" element={<><Navbar /><Poetry /></>} />
         <Route path="/contact" element={<><Navbar /><Contact /></>} />
         

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import DetailDialog from '@/components/ui/DetailDialog';
+import { useNavigate } from 'react-router-dom';
 
 const blogs = [
   {
@@ -40,8 +40,8 @@ We'll also look at practical examples and best practices for production applicat
 ];
 
 const Blog = () => {
+  const navigate = useNavigate();
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
-  const [selectedPost, setSelectedPost] = useState<typeof blogs[0] | null>(null);
 
   const handleLike = (id: number) => {
     setLikedPosts(prev => 
@@ -54,80 +54,50 @@ const Blog = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen pt-16 px-4 md:px-6"
+      className="min-h-screen pt-20 px-4 md:px-6"
     >
-      <div className="container mx-auto py-8">
-        <h1 className="text-4xl md:text-6xl font-display font-bold mb-12">Blog</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {blogs.map((blog) => (
+      <div className="container mx-auto py-20">
+        <h1 className="text-4xl md:text-6xl font-display font-bold mb-12 text-gray-800">Blog</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {blogs.map((post) => (
             <motion.article
-              key={blog.id}
+              key={post.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="glass rounded-xl p-6 cursor-pointer hover:bg-white/5 transition-colors flex flex-col h-[300px]"
-              onClick={() => setSelectedPost(blog)}
+              className="bg-white/80 backdrop-blur-lg rounded-xl p-6 shadow-sm hover:bg-white/90 transition-colors"
             >
-              <h2 className="text-2xl font-display font-bold mb-2 line-clamp-2 text-gray-900">{blog.title}</h2>
-              <p className="text-sm text-gray-700 mb-4">{blog.date}</p>
-              <p className="text-gray-800 mb-6 line-clamp-3 flex-grow">{blog.excerpt}</p>
+              <div 
+                className="cursor-pointer"
+                onClick={() => navigate(`/blog/${post.id}`)}
+              >
+                <h2 className="text-2xl font-display font-bold mb-4 text-gray-800">{post.title}</h2>
+                <p className="text-gray-600 mb-4">{post.excerpt}</p>
+                <p className="text-sm text-gray-500 mb-6">{post.date}</p>
+              </div>
               <div className="flex items-center gap-4">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleLike(blog.id);
+                    handleLike(post.id);
                   }}
                   className={`flex items-center gap-2 px-3 py-1 rounded-full ${
-                    likedPosts.includes(blog.id) ? 'bg-white/20' : 'bg-white/10'
-                  }`}
+                    likedPosts.includes(post.id) ? 'bg-red-100' : 'bg-white'
+                  } border border-red-200 transition-colors`}
                 >
                   <span>❤️</span>
-                  <span>{blog.likes + (likedPosts.includes(blog.id) ? 1 : 0)}</span>
+                  <span className="text-gray-700">{post.likes + (likedPosts.includes(post.id) ? 1 : 0)}</span>
                 </button>
                 <button 
-                  className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    // Handle comments
-                  }}
+                  className="flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-gray-200"
                 >
                   <span>💬</span>
-                  <span>{blog.comments}</span>
+                  <span className="text-gray-700">{post.comments}</span>
                 </button>
               </div>
             </motion.article>
           ))}
         </div>
       </div>
-
-      <DetailDialog
-        isOpen={!!selectedPost}
-        onClose={() => setSelectedPost(null)}
-      >
-        {selectedPost && (
-          <div className="p-6">
-            <h2 className="text-2xl font-display font-bold mb-2">{selectedPost.title}</h2>
-            <p className="text-sm text-gray-400 mb-6">{selectedPost.date}</p>
-            <div className="prose prose-invert max-w-none">
-              <p className="whitespace-pre-line">{selectedPost.content}</p>
-            </div>
-            <div className="mt-6 flex items-center gap-4">
-              <button
-                onClick={() => handleLike(selectedPost.id)}
-                className={`flex items-center gap-2 px-3 py-1 rounded-full ${
-                  likedPosts.includes(selectedPost.id) ? 'bg-white/20' : 'bg-white/10'
-                }`}
-              >
-                <span>❤️</span>
-                <span>{selectedPost.likes + (likedPosts.includes(selectedPost.id) ? 1 : 0)}</span>
-              </button>
-              <button className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10">
-                <span>💬</span>
-                <span>{selectedPost.comments}</span>
-              </button>
-            </div>
-          </div>
-        )}
-      </DetailDialog>
     </motion.div>
   );
 };
