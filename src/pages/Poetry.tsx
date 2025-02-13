@@ -1,3 +1,4 @@
+
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import DetailDialog from '@/components/ui/DetailDialog';
@@ -32,8 +33,7 @@ const Poetry = () => {
   const [selectedPoem, setSelectedPoem] = useState<typeof poems[0] | null>(null);
 
   useEffect(() => {
-    // Very light red background (10% red)
-    document.body.style.background = '#fff1f1';
+    document.body.style.background = 'hsl(351, 84%, 57%)';
     return () => {
       document.body.style.background = '';
     };
@@ -50,21 +50,21 @@ const Poetry = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="min-h-screen pt-20 px-4 md:px-6 text-gray-800"
+      className="min-h-screen pt-20 px-4 md:px-6 text-poetry-foreground"
     >
       <div className="container mx-auto py-20">
-        <h1 className="text-4xl md:text-6xl font-display font-bold mb-12 text-gray-800">Poetry</h1>
+        <h1 className="text-4xl md:text-6xl font-display font-bold mb-12">Poetry</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {poems.map((poem) => (
             <motion.article
               key={poem.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white/80 backdrop-blur-lg rounded-xl p-6 cursor-pointer hover:bg-white/90 transition-colors shadow-sm"
+              className="bg-white/10 backdrop-blur-lg rounded-xl p-6 cursor-pointer hover:bg-white/20 transition-colors"
               onClick={() => setSelectedPoem(poem)}
             >
-              <h2 className="text-2xl font-display font-bold mb-4 text-gray-800">{poem.title}</h2>
-              <p className="whitespace-pre-line mb-6 text-gray-700">{poem.content}</p>
+              <h2 className="text-2xl font-display font-bold mb-4">{poem.title}</h2>
+              <p className="whitespace-pre-line mb-6 text-poetry-foreground/90">{poem.content}</p>
               <div className="flex items-center gap-4">
                 <button
                   onClick={(e) => {
@@ -72,21 +72,21 @@ const Poetry = () => {
                     handleLike(poem.id);
                   }}
                   className={`flex items-center gap-2 px-3 py-1 rounded-full ${
-                    likedPoems.includes(poem.id) ? 'bg-red-100' : 'bg-white'
-                  } border border-red-200 transition-colors`}
+                    likedPoems.includes(poem.id) ? 'bg-white/20' : 'bg-white/10'
+                  }`}
                 >
                   <span>❤️</span>
-                  <span className="text-gray-700">{poem.likes + (likedPoems.includes(poem.id) ? 1 : 0)}</span>
+                  <span>{poem.likes + (likedPoems.includes(poem.id) ? 1 : 0)}</span>
                 </button>
                 <button 
-                  className="flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-gray-200"
+                  className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10"
                   onClick={(e) => {
                     e.stopPropagation();
                     // Handle comments
                   }}
                 >
                   <span>💬</span>
-                  <span className="text-gray-700">{poem.comments}</span>
+                  <span>{poem.comments}</span>
                 </button>
               </div>
             </motion.article>
@@ -100,14 +100,26 @@ const Poetry = () => {
       >
         {selectedPoem && (
           <div className="p-6">
-            <h2 className="text-2xl font-display font-bold mb-4 text-gray-800">{selectedPoem.title}</h2>
-            <p className="whitespace-pre-line mb-6 text-gray-700">{selectedPoem.content}</p>
-            {selectedPoem.story && (
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <h3 className="text-lg font-semibold mb-2 text-gray-800">Behind the Poem</h3>
-                <p className="text-gray-700">{selectedPoem.story}</p>
-              </div>
-            )}
+            <h2 className="text-2xl font-display font-bold mb-4">{selectedPoem.title}</h2>
+            <div className="mb-8">
+              <p className="text-lg font-serif whitespace-pre-line mb-6">{selectedPoem.content}</p>
+              <p className="text-gray-400 italic">{selectedPoem.story}</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => handleLike(selectedPoem.id)}
+                className={`flex items-center gap-2 px-3 py-1 rounded-full ${
+                  likedPoems.includes(selectedPoem.id) ? 'bg-white/20' : 'bg-white/10'
+                }`}
+              >
+                <span>❤️</span>
+                <span>{selectedPoem.likes + (likedPoems.includes(selectedPoem.id) ? 1 : 0)}</span>
+              </button>
+              <button className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10">
+                <span>💬</span>
+                <span>{selectedPoem.comments}</span>
+              </button>
+            </div>
           </div>
         )}
       </DetailDialog>

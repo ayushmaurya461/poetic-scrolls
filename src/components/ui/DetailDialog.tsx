@@ -1,3 +1,4 @@
+
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface DetailDialogProps {
@@ -9,7 +10,7 @@ interface DetailDialogProps {
 const DetailDialog = ({ isOpen, onClose, children }: DetailDialogProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[70vw] max-w-[90vw] w-full bg-background/95 backdrop-blur-lg border border-white/10 sm:text-base text-sm">
+      <DialogContent className="max-w-2xl bg-background/95 backdrop-blur-lg border border-white/10">
         {children}
       </DialogContent>
     </Dialog>
