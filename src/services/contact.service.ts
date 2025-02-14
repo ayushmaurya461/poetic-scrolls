@@ -1,23 +1,24 @@
 
-import {
-  collection,
-  addDoc,
-} from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-
-const COLLECTION_NAME = 'messages';
+import { supabase } from '@/lib/supabase';
 
 export interface ContactMessage {
+  id?: string;
   name: string;
   email: string;
   message: string;
-  createdAt: string;
+  created_at?: string;
 }
 
-export const submitContactForm = async (message: Omit<ContactMessage, 'createdAt'>) => {
-  const messageWithTimestamp = {
-    ...message,
-    createdAt: new Date().toISOString()
-  };
-  return await addDoc(collection(db, COLLECTION_NAME), messageWithTimestamp);
+export const submitContactForm = async (message: Omit<ContactMessage, 'id' | 'created_at'>) => {
+  const { data, error } = await supabase
+    .from('messages')
+    .insert([{ 
+      ...message,
+      created_at: new Date().toISOString()
+    }])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 };
