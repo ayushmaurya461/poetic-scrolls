@@ -4,11 +4,13 @@ import { Link } from 'react-router-dom';
 import { skills } from '@/data/skills';
 import QuoteSlideshow from '@/components/QuoteSlideshow';
 import TypewriterEffect from '@/components/TypewriterEffect';
-import { useState } from 'react';
+import { AdminDialog } from '@/components/AdminDialog';
+import { useAdminShortcut } from '@/hooks/useAdminShortcut';
 import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
   const { toast } = useToast();
+  const { showLoginDialog, setShowLoginDialog } = useAdminShortcut();
 
   const [section1Ref, section1InView] = useInView({ threshold: 0.3, triggerOnce: true });
   const [section2Ref, section2InView] = useInView({ threshold: 0.3, triggerOnce: true });
@@ -27,6 +29,10 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-blue-50">
+      <AdminDialog 
+        open={showLoginDialog} 
+        onOpenChange={setShowLoginDialog} 
+      />
       <motion.section
         ref={section1Ref}
         initial={{ opacity: 0 }}
