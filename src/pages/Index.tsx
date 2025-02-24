@@ -1,3 +1,4 @@
+
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -11,10 +12,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { sendLoginLink } from '@/services/auth.service';
+import { sendLoginLink, completeSignIn } from '@/services/auth.service';
 import { useToast } from "@/components/ui/use-toast";
-import { supabase } from '@/lib/supabase';
 
 const Index = () => {
   const navigate = useNavigate();
@@ -68,19 +69,9 @@ const Index = () => {
   // Handle email link sign-in
   useEffect(() => {
     const handleEmailLink = async () => {
-      const searchParams = new URLSearchParams(window.location.search);
-      const token = searchParams.get('token');
-      const type = searchParams.get('type');
-
-      if (type === 'email' && token) {
+      if (location.href.includes('apiKey=')) {
         try {
-          const { error } = await supabase.auth.verifyOtp({
-            token_hash: token,
-            type: 'email',
-          });
-          
-          if (error) throw error;
-          
+          await completeSignIn();
           navigate('/admin/blog');
           toast({
             title: "Success",
