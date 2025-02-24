@@ -1,4 +1,6 @@
 
+const API_URL = 'http://localhost:5000/api';
+
 export interface Poem {
   id?: string;
   title: string;
@@ -8,7 +10,7 @@ export interface Poem {
 }
 
 export const getPoems = async () => {
-  const response = await fetch('http://localhost:5000/api/poems');
+  const response = await fetch(`${API_URL}/poems`);
   if (!response.ok) {
     throw new Error('Failed to fetch poems');
   }
@@ -16,7 +18,7 @@ export const getPoems = async () => {
 };
 
 export const createPoem = async (poem: Omit<Poem, 'id' | 'createdAt' | 'updatedAt'>) => {
-  const response = await fetch('http://localhost:5000/api/poems', {
+  const response = await fetch(`${API_URL}/poems`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -33,7 +35,7 @@ export const createPoem = async (poem: Omit<Poem, 'id' | 'createdAt' | 'updatedA
 };
 
 export const updatePoem = async (id: string, poem: Partial<Poem>) => {
-  const response = await fetch(`http://localhost:5000/api/poems/${id}`, {
+  const response = await fetch(`${API_URL}/poems/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -50,7 +52,7 @@ export const updatePoem = async (id: string, poem: Partial<Poem>) => {
 };
 
 export const deletePoem = async (id: string) => {
-  const response = await fetch(`http://localhost:5000/api/poems/${id}`, {
+  const response = await fetch(`${API_URL}/poems/${id}`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`,

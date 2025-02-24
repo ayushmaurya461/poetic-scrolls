@@ -1,4 +1,6 @@
 
+const API_URL = 'http://localhost:5000/api';
+
 export interface Experience {
   id?: string;
   title: string;
@@ -12,7 +14,7 @@ export interface Experience {
 }
 
 export const getExperiences = async () => {
-  const response = await fetch('http://localhost:5000/api/experiences');
+  const response = await fetch(`${API_URL}/experiences`);
   if (!response.ok) {
     throw new Error('Failed to fetch experiences');
   }
@@ -20,7 +22,7 @@ export const getExperiences = async () => {
 };
 
 export const createExperience = async (experience: Omit<Experience, 'id'>) => {
-  const response = await fetch('http://localhost:5000/api/experiences', {
+  const response = await fetch(`${API_URL}/experiences`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -37,7 +39,7 @@ export const createExperience = async (experience: Omit<Experience, 'id'>) => {
 };
 
 export const updateExperience = async (id: string, experience: Partial<Experience>) => {
-  const response = await fetch(`http://localhost:5000/api/experiences/${id}`, {
+  const response = await fetch(`${API_URL}/experiences/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -54,7 +56,7 @@ export const updateExperience = async (id: string, experience: Partial<Experienc
 };
 
 export const deleteExperience = async (id: string) => {
-  const response = await fetch(`http://localhost:5000/api/experiences/${id}`, {
+  const response = await fetch(`${API_URL}/experiences/${id}`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`,

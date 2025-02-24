@@ -1,12 +1,12 @@
 
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { connectDB } from './config/db';
 import { Blog } from './models/Blog';
 import { User } from './models/User';
-import { authMiddleware, AuthRequest } from './middleware/auth';
+import { authMiddleware } from './middleware/auth';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,7 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 // Auth routes
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
@@ -61,7 +61,7 @@ const initializeAdmin = async () => {
 initializeAdmin();
 
 // Blog routes
-app.get('/api/blogs', async (_req, res) => {
+app.get('/api/blogs', async (_req: Request, res: Response) => {
   try {
     const blogs = await Blog.find().sort({ createdAt: -1 });
     res.json(blogs);
@@ -70,7 +70,7 @@ app.get('/api/blogs', async (_req, res) => {
   }
 });
 
-app.post('/api/blogs', authMiddleware, async (req: AuthRequest, res) => {
+app.post('/api/blogs', authMiddleware, async (req: Request, res: Response) => {
   try {
     const { title, content } = req.body;
     const newBlog = new Blog({
@@ -84,7 +84,7 @@ app.post('/api/blogs', authMiddleware, async (req: AuthRequest, res) => {
   }
 });
 
-app.put('/api/blogs/:id', authMiddleware, async (req: AuthRequest, res) => {
+app.put('/api/blogs/:id', authMiddleware, async (req: Request, res: Response) => {
   try {
     const { title, content } = req.body;
     const blog = await Blog.findByIdAndUpdate(
@@ -103,7 +103,7 @@ app.put('/api/blogs/:id', authMiddleware, async (req: AuthRequest, res) => {
   }
 });
 
-app.delete('/api/blogs/:id', authMiddleware, async (req: AuthRequest, res) => {
+app.delete('/api/blogs/:id', authMiddleware, async (req: Request, res: Response) => {
   try {
     const blog = await Blog.findByIdAndDelete(req.params.id);
     
