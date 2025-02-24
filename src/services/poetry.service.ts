@@ -1,48 +1,63 @@
 
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  query,
-  orderBy
-} from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-
-const COLLECTION_NAME = 'poems';
-
 export interface Poem {
   id?: string;
   title: string;
   content: string;
-  story?: string;
-  likes: number;
-  comments: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export const getPoems = async () => {
-  const q = query(collection(db, COLLECTION_NAME), orderBy('createdAt', 'desc'));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  })) as Poem[];
+  const response = await fetch('http://localhost:5000/api/poems');
+  if (!response.ok) {
+    throw new Error('Failed to fetch poems');
+  }
+  return await response.json();
 };
 
-export const createPoem = async (poem: Omit<Poem, 'id'>) => {
-  return await addDoc(collection(db, COLLECTION_NAME), poem);
+export const createPoem = async (poem: Omit<Poem, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const response = await fetch('http://localhost:5000/api/poems', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+    body: JSON.stringify(poem),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create poem');
+  }
+
+  return await response.json();
 };
 
 export const updatePoem = async (id: string, poem: Partial<Poem>) => {
-  const docRef = doc(db, COLLECTION_NAME, id);
-  return await updateDoc(docRef, poem);
+  const response = await fetch(`http://localhost:5000/api/poems/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+    body: JSON.stringify(poem),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update poem');
+  }
+
+  return await response.json();
 };
 
 export const deletePoem = async (id: string) => {
-  const docRef = doc(db, COLLECTION_NAME, id);
-  return await deleteDoc(docRef);
+  const response = await fetch(`http://localhost:5000/api/poems/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to delete poem');
+  }
 };

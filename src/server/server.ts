@@ -1,5 +1,5 @@
 
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { connectDB } from './config/db';
 import { Blog } from './models/Blog';
@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 // Public routes
-app.get('/api/blogs', async (req, res) => {
+app.get('/api/blogs', async (_req: Request, res: Response) => {
   try {
     const blogs = await Blog.find().sort({ createdAt: -1 });
     res.json(blogs);
@@ -25,7 +25,7 @@ app.get('/api/blogs', async (req, res) => {
   }
 });
 
-app.get('/api/blogs/:id', async (req, res) => {
+app.get('/api/blogs/:id', async (req: Request, res: Response) => {
   try {
     const blog = await Blog.findById(req.params.id);
     if (!blog) {
@@ -38,7 +38,7 @@ app.get('/api/blogs/:id', async (req, res) => {
 });
 
 // Protected routes
-app.post('/api/blogs', authMiddleware, async (req: AuthRequest, res) => {
+app.post('/api/blogs', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     const { title, content } = req.body;
     const newBlog = new Blog({
@@ -52,7 +52,7 @@ app.post('/api/blogs', authMiddleware, async (req: AuthRequest, res) => {
   }
 });
 
-app.put('/api/blogs/:id', authMiddleware, async (req: AuthRequest, res) => {
+app.put('/api/blogs/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     const { title, content } = req.body;
     const blog = await Blog.findById(req.params.id);
@@ -71,7 +71,7 @@ app.put('/api/blogs/:id', authMiddleware, async (req: AuthRequest, res) => {
   }
 });
 
-app.delete('/api/blogs/:id', authMiddleware, async (req: AuthRequest, res) => {
+app.delete('/api/blogs/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     const blog = await Blog.findById(req.params.id);
     

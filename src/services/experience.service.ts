@@ -1,52 +1,67 @@
 
-import {
-  collection,
-  getDocs,
-  addDoc,
-  updateDoc,
-  deleteDoc,
-  doc,
-  query,
-  orderBy
-} from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-
-const COLLECTION_NAME = 'experiences';
-
 export interface Experience {
   id?: string;
+  title: string;
   company: string;
-  role: string;
-  period: string;
+  location: string;
+  startDate: string;
+  endDate?: string;
   description: string;
   technologies: string[];
-  details: {
-    achievements: string[];
-    responsibilities: string[];
-  };
-  createdAt: string;
-  updatedAt: string;
+  current?: boolean;
 }
 
 export const getExperiences = async () => {
-  const q = query(collection(db, COLLECTION_NAME), orderBy('createdAt', 'desc'));
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  })) as Experience[];
+  const response = await fetch('http://localhost:5000/api/experiences');
+  if (!response.ok) {
+    throw new Error('Failed to fetch experiences');
+  }
+  return await response.json();
 };
 
 export const createExperience = async (experience: Omit<Experience, 'id'>) => {
-  return await addDoc(collection(db, COLLECTION_NAME), experience);
+  const response = await fetch('http://localhost:5000/api/experiences', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+    body: JSON.stringify(experience),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create experience');
+  }
+
+  return await response.json();
 };
 
 export const updateExperience = async (id: string, experience: Partial<Experience>) => {
-  const docRef = doc(db, COLLECTION_NAME, id);
-  return await updateDoc(docRef, experience);
+  const response = await fetch(`http://localhost:5000/api/experiences/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+    body: JSON.stringify(experience),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update experience');
+  }
+
+  return await response.json();
 };
 
 export const deleteExperience = async (id: string) => {
-  const docRef = doc(db, COLLECTION_NAME, id);
-  return await deleteDoc(docRef);
+  const response = await fetch(`http://localhost:5000/api/experiences/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to delete experience');
+  }
 };

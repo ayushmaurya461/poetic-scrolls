@@ -1,23 +1,24 @@
 
-import {
-  collection,
-  addDoc,
-} from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-
-const COLLECTION_NAME = 'messages';
-
 export interface ContactMessage {
+  id?: string;
   name: string;
   email: string;
   message: string;
-  createdAt: string;
+  createdAt?: string;
 }
 
-export const submitContactForm = async (message: Omit<ContactMessage, 'createdAt'>) => {
-  const messageWithTimestamp = {
-    ...message,
-    createdAt: new Date().toISOString()
-  };
-  return await addDoc(collection(db, COLLECTION_NAME), messageWithTimestamp);
+export const sendContactMessage = async (message: Omit<ContactMessage, 'id' | 'createdAt'>) => {
+  const response = await fetch('http://localhost:5000/api/contact', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(message),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to send message');
+  }
+
+  return await response.json();
 };
