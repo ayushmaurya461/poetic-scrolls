@@ -1,35 +1,48 @@
 
-import { supabase } from '@/lib/supabase';
+import { 
+  sendSignInLinkToEmail,
+  isSignInWithEmailLink,
+  signInWithEmailLink,
+  signOut as firebaseSignOut,
+  User
+} from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
-const ADMIN_EMAIL = "itsayush.ayush@gmail.com";
+const ADMIN_EMAIL = "itsayush.ayush@gmail.com"; // Replace with your email
 
 export const sendLoginLink = async () => {
+  const actionCodeSettings = {
+    url: window.location.href,
+    handleCodeInApp: true
+  };
+
   try {
-    const { error } = await supabase.auth.signInWithOtp({
-      email: ADMIN_EMAIL,
-    });
-    
-    if (error) throw error;
+    await sendSignInLinkToEmail(auth, ADMIN_EMAIL, actionCodeSettings);
+    // Save the email for confirmation
+    window.localStorage.setItem('emailForSignIn', ADMIN_EMAIL);
     return true;
   } catch (error) {
     throw error;
   }
 };
 
-export const signOut = async () => {
+export const completeSignIn = async () => {
   try {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    if (isSignInWithEmailLink(auth, window.location.href)) {
+      const email = window.localStorage.getItem('emailForSignIn');
+      if (!email) {
+        throw new Error("Email not found");
+      }
+      
+      const result = await signInWithEmailLink(auth, email, window.location.href);
+      window.localStorage.removeItem('emailForSignIn');
+      return result.user;
+    }
   } catch (error) {
     throw error;
   }
 };
 
-export const getCurrentUser = async () => {
-  try {
-    const { data: { user } } = await supabase.auth.getUser();
-    return user;
-  } catch (error) {
-    throw error;
-  }
-};
+export const signOut = () => firebaseSignOut(auth);
+
+export const getCurrentUser = (): User | null => auth.currentUser;

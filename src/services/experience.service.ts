@@ -1,5 +1,17 @@
 
-import { supabase } from '@/lib/supabase';
+import {
+  collection,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  query,
+  orderBy
+} from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+
+const COLLECTION_NAME = 'experiences';
 
 export interface Experience {
   id?: string;
@@ -12,55 +24,29 @@ export interface Experience {
     achievements: string[];
     responsibilities: string[];
   };
-  created_at?: string;
-  updated_at?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export const getExperiences = async () => {
-  const { data, error } = await supabase
-    .from('experiences')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (error) throw error;
-  return data;
+  const q = query(collection(db, COLLECTION_NAME), orderBy('createdAt', 'desc'));
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  })) as Experience[];
 };
 
-export const createExperience = async (experience: Omit<Experience, 'id' | 'created_at' | 'updated_at'>) => {
-  const { data, error } = await supabase
-    .from('experiences')
-    .insert([{ 
-      ...experience,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }])
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
+export const createExperience = async (experience: Omit<Experience, 'id'>) => {
+  return await addDoc(collection(db, COLLECTION_NAME), experience);
 };
 
 export const updateExperience = async (id: string, experience: Partial<Experience>) => {
-  const { data, error } = await supabase
-    .from('experiences')
-    .update({ 
-      ...experience,
-      updated_at: new Date().toISOString()
-    })
-    .eq('id', id)
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
+  const docRef = doc(db, COLLECTION_NAME, id);
+  return await updateDoc(docRef, experience);
 };
 
 export const deleteExperience = async (id: string) => {
-  const { error } = await supabase
-    .from('experiences')
-    .delete()
-    .eq('id', id);
-
-  if (error) throw error;
+  const docRef = doc(db, COLLECTION_NAME, id);
+  return await deleteDoc(docRef);
 };
