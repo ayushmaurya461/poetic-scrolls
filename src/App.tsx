@@ -1,10 +1,9 @@
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AnimatePresence } from "framer-motion";
 import Navbar from "./components/Navbar";
 import Index from "./pages/Index";
 import Projects from "./pages/Projects";
-import ProjectDetails from "./pages/ProjectDetails";
 import Experience from "./pages/Experience";
 import Blog from "./pages/Blog";
 import Poetry from "./pages/Poetry";
@@ -25,7 +24,6 @@ const App = () => (
       <Routes>
         <Route path="/" element={<><Navbar /><Index /></>} />
         <Route path="/projects" element={<><Navbar /><Projects /></>} />
-        <Route path="/projects/:id" element={<><Navbar /><ProjectDetails /></>} />
         <Route path="/experience" element={<><Navbar /><Experience /></>} />
         <Route path="/blog" element={<><Navbar /><Blog /></>} />
         <Route path="/blog/:id" element={<><Navbar /><BlogDetail /></>} />

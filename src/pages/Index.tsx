@@ -1,25 +1,16 @@
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { skills } from '@/data/skills';
 import QuoteSlideshow from '@/components/QuoteSlideshow';
 import TypewriterEffect from '@/components/TypewriterEffect';
-import { useState, useEffect } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { AdminDialog } from '@/components/AdminDialog';
+import { useAdminShortcut } from '@/hooks/useAdminShortcut';
+import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
-  const navigate = useNavigate();
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const { toast } = useToast();
+  const { showLoginDialog, setShowLoginDialog } = useAdminShortcut();
 
   const [section1Ref, section1InView] = useInView({ threshold: 0.3, triggerOnce: true });
   const [section2Ref, section2InView] = useInView({ threshold: 0.3, triggerOnce: true });
@@ -36,40 +27,18 @@ const Index = () => {
     other: 'Other Tools'
   };
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key.toLowerCase() === 'a') {
-        event.preventDefault();
-        setIsLoginModalOpen(true);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // Add your authentication logic here
-    // This is a simple example - replace with your actual authentication
-    if (username === 'admin' && password === 'admin') {
-      setIsLoginModalOpen(false);
-      navigate('/admin/blog');
-    } else {
-      alert('Invalid credentials');
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-blue-50">
-      {/* Hero Section */}
+      <AdminDialog 
+        open={showLoginDialog} 
+        onOpenChange={setShowLoginDialog} 
+      />
       <motion.section
         ref={section1Ref}
         initial={{ opacity: 0 }}
         animate={{ opacity: section1InView ? 1 : 0 }}
         className="h-screen flex items-center justify-center relative overflow-hidden"
       >
-        {/* Blurry gradient background */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-pink-200/30 via-white/50 to-blue-200/30 backdrop-blur-xl" />
           <div className="absolute -inset-[100%] animate-[spin_20s_linear_infinite] bg-gradient-to-br from-pink-200/20 via-purple-200/20 to-blue-200/20 backdrop-blur-3xl" />
@@ -106,20 +75,17 @@ const Index = () => {
               </Link>
             </div>
 
-            {/* Quote Slideshow */}
             <QuoteSlideshow />
           </motion.div>
         </div>
       </motion.section>
 
-      {/* What I Do Section */}
       <motion.section
         ref={section2Ref}
         initial={{ opacity: 0 }}
         animate={{ opacity: section2InView ? 1 : 0 }}
         className="min-h-[50vh] flex items-center justify-center py-20 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white relative overflow-hidden"
       >
-        {/* Animated background particles */}
         <motion.div 
           className="absolute inset-0"
           initial={{ opacity: 0 }}
@@ -272,7 +238,6 @@ const Index = () => {
         </div>
       </motion.section>
 
-      {/* Biography Section */}
       <motion.section
         ref={section3Ref}
         initial={{ opacity: 0, y: 50 }}
@@ -317,7 +282,6 @@ const Index = () => {
         </div>
       </motion.section>
 
-      {/* Skills Section */}
       <motion.section
         ref={section4Ref}
         initial={{ opacity: 0, y: 50 }}
@@ -377,7 +341,6 @@ const Index = () => {
         </div>
       </motion.section>
 
-      {/* Featured Work Section */}
       <motion.section
         ref={section5Ref}
         initial={{ opacity: 0, y: 50 }}
@@ -450,38 +413,6 @@ const Index = () => {
           </div>
         </div>
       </motion.section>
-
-      {/* Admin Login Modal */}
-      <Dialog open={isLoginModalOpen} onOpenChange={setIsLoginModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Admin Login</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <Button type="submit" className="w-full">Login</Button>
-          </form>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
