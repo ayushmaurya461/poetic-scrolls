@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 import { connectDB } from './config/db';
 import { Blog } from './models/Blog';
 import { User } from './models/User';
-import { authMiddleware } from './middleware/auth';
+import { authMiddleware, AuthRequest } from './middleware/auth';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -70,7 +70,7 @@ app.get('/api/blogs', async (_req: Request, res: Response) => {
   }
 });
 
-app.post('/api/blogs', authMiddleware, async (req: Request, res: Response) => {
+app.post('/api/blogs', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     const { title, content } = req.body;
     const newBlog = new Blog({
@@ -84,7 +84,7 @@ app.post('/api/blogs', authMiddleware, async (req: Request, res: Response) => {
   }
 });
 
-app.put('/api/blogs/:id', authMiddleware, async (req: Request, res: Response) => {
+app.put('/api/blogs/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     const { title, content } = req.body;
     const blog = await Blog.findByIdAndUpdate(
@@ -103,7 +103,7 @@ app.put('/api/blogs/:id', authMiddleware, async (req: Request, res: Response) =>
   }
 });
 
-app.delete('/api/blogs/:id', authMiddleware, async (req: Request, res: Response) => {
+app.delete('/api/blogs/:id', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
     const blog = await Blog.findByIdAndDelete(req.params.id);
     
