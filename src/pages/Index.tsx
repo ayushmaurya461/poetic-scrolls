@@ -1,27 +1,13 @@
-
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { skills } from '@/data/skills';
 import QuoteSlideshow from '@/components/QuoteSlideshow';
 import TypewriterEffect from '@/components/TypewriterEffect';
-import { useState, useEffect } from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { sendLoginLink, completeSignIn } from '@/services/auth.service';
+import { useState } from 'react';
 import { useToast } from "@/components/ui/use-toast";
 
 const Index = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const [section1Ref, section1InView] = useInView({ threshold: 0.3, triggerOnce: true });
@@ -38,57 +24,6 @@ const Index = () => {
     '3d': '3D Development',
     other: 'Other Tools'
   };
-
-  useEffect(() => {
-    const handleKeyDown = async (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key.toLowerCase() === 'a') {
-        event.preventDefault();
-        setIsLoading(true);
-        try {
-          await sendLoginLink();
-          setIsLoginModalOpen(true);
-          toast({
-            title: "Success",
-            description: "Login link has been sent to your email",
-          });
-        } catch (error) {
-          toast({
-            title: "Error",
-            description: "Failed to send login link",
-            variant: "destructive",
-          });
-        }
-        setIsLoading(false);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [toast]);
-
-  // Handle email link sign-in
-  useEffect(() => {
-    const handleEmailLink = async () => {
-      if (location.href.includes('apiKey=')) {
-        try {
-          await completeSignIn();
-          navigate('/admin/blog');
-          toast({
-            title: "Success",
-            description: "Logged in successfully",
-          });
-        } catch (error) {
-          toast({
-            title: "Error",
-            description: "Invalid or expired login link",
-            variant: "destructive",
-          });
-        }
-      }
-    };
-
-    handleEmailLink();
-  }, [location, navigate, toast]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-blue-50">
@@ -472,25 +407,6 @@ const Index = () => {
           </div>
         </div>
       </motion.section>
-
-      <Dialog open={isLoginModalOpen} onOpenChange={setIsLoginModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Check Your Email</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p className="text-center text-gray-600">
-              A login link has been sent to your email address. Please check your inbox and click the link to sign in.
-            </p>
-            <Button 
-              onClick={() => setIsLoginModalOpen(false)} 
-              className="w-full"
-            >
-              Close
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
